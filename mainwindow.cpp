@@ -1,20 +1,20 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+// Std libs
+#include "iostream"
+
+// Qt libs
+#include <QSignalBlocker>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_mainframescene(new QGraphicsScene(this)),
-    m_lb(cv::Scalar(100,120,100)), m_ub(cv::Scalar(255,255,255)),
-    m_timer(new QTimer(this)), m_recording(false)
+    m_lb(cv::Scalar(20,60,60)), m_ub(cv::Scalar(255,90,255)), m_black(cv::Scalar(0,0,0)),
+    m_timer(new QTimer(this)), m_recording(false), m_previewing(false)
 {
     ui->setupUi(this);
-
-    // Setup graphic view
-    m_backcolor.setRgb(0,0,0);
-//    m_frametodisplay.setColor(5, m_backcolor.rgb());
-    m_mainframescene->addPixmap(QPixmap::fromImage(m_frametodisplay));
-    ui->graphicsView->setScene(m_mainframescene);
 
     // Setup cv capture
     m_cap.open(0);
@@ -23,16 +23,26 @@ MainWindow::MainWindow(QWidget *parent) :
         return;
     }
 
-    // Connect timer
-    m_timer->start(30);
-    connect(m_timer, SIGNAL(timeout()), this, SLOT(procFrameAndRefresh()));
+    // Store blank frame
+    m_cap.read(m_orig);
+    if(m_orig.empty()) exit(EXIT_FAILURE);
+    cv::Mat imgtemp(m_orig.rows, m_orig.cols, m_orig.type(), m_black);
+    imgtemp.convertTo(m_blackmat, cv::COLOR_BGR2RGB);
+    m_allblack = QImage((uchar*) m_blackmat.data, m_blackmat.cols, m_blackmat.rows, m_blackmat.step, QImage::Format_Indexed8);
 
-    // Connect GUI elements
-    connect(ui->pBtn_Record, SIGNAL(clicked()), this, SLOT(on_pBtn_Record_clicked()));
+    // Apply the black screen
+    ui->graphicsView->setScene(m_mainframescene);
+    m_mainframescene->addPixmap(QPixmap::fromImage(m_allblack));
+    ui->graphicsView->show();
+
+    // Connect timer
+    m_timer->start(60);
+    connect(m_timer, SIGNAL(timeout()), this, SLOT(procFrameAndRefresh()));
 }
 
 MainWindow::~MainWindow()
 {
+    m_cap.release();
     delete ui;
 }
 
@@ -42,17 +52,24 @@ MainWindow::~MainWindow()
 
 // procFrameAndRefresh ...
 void MainWindow::procFrameAndRefresh(){
-    m_cap.read(m_orig);
+    // Display image if previewing
+    if(!m_previewing){
+        m_frametodisplay = m_allblack;
+    }
+    else{
+        m_cap.read(m_orig);
 
-    if(m_orig.empty()) return;
+        if(m_orig.empty()) exit(EXIT_SUCCESS);
 
-    cv::inRange(m_orig, m_lb, m_ub, m_proc);
+        // Process image
+        inRange(m_orig, m_lb, m_ub, m_proc);
 
-    // Convert cv to qt
-    cv::cvtColor(m_orig, m_orig, cv::COLOR_BGR2RGB);
-    m_frametodisplay = QImage(m_proc.data, m_proc.cols, m_proc.rows, m_proc.step, QImage::Format_Indexed8);
-
-    // Display image
+        // Convert cv to qt
+        cv::Mat imgtemp = cv::Mat(m_proc.rows, m_proc.cols, m_proc.type(), m_proc.data, m_proc.step);
+        cv::cvtColor(imgtemp, imgtemp, cv::COLOR_GRAY2RGB);
+        m_frametodisplay = QImage(m_proc.data, m_proc.cols, m_proc.rows, m_proc.step, QImage::Format_Indexed8);
+    }
+    // Display new image
     m_mainframescene->addPixmap(QPixmap::fromImage(m_frametodisplay));
 }
 
@@ -68,16 +85,9 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event){
 
 // on_pBtn_Record_clicked starts or stops recording
 void MainWindow::on_pBtn_Record_clicked(){
-//    if(!m_recording){
-//        // Connect timer
-//        m_timer->start(30);
-//        connect(m_timer, SIGNAL(timeout()), this, SLOT(procFrameAndRefresh()));
-//    }
-//    else{
-//        // Disconnect timer
-//        disconnect(m_timer, SIGNAL(timeout()), this, SLOT(procFrameAndRefresh()));
-//        m_frametodisplay.setColor(0, m_backcolor.rgb());
-//        m_timer->stop();
-//    }
-//    m_recording = !m_recording;
+    QSignalBlocker blocker(this);
+    m_recording = !m_recording;
+    m_previewing = !m_previewing;
+    if(m_recording) std::cout << "Started recording\n";
+    else std::cout << "Stopped recording\n";
 }

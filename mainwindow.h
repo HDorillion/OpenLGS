@@ -31,17 +31,18 @@ private:
     // GUI elements
     Ui::MainWindow *ui;
     QGraphicsScene *m_mainframescene;
-    QImage m_frametodisplay;
+    QImage m_frametodisplay, m_allblack;
+    QPixmap *m_lastframe;
     QColor m_backcolor;
     // cv vars
     cv::VideoCapture m_cap;
-    cv::Mat m_orig, m_proc;
-    cv::Scalar m_lb, m_ub;
+    cv::Mat m_orig, m_proc, m_blackmat;
+    cv::Scalar m_lb, m_ub, m_black;
 
     // Timer
     QTimer *m_timer;
 
-    bool m_recording;
+    bool m_recording, m_previewing;
 
 private slots:
     void on_pBtn_Record_clicked();
