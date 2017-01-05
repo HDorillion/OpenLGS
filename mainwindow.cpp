@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Store blank frame
     m_cap.read(m_orig);
     if(m_orig.empty()) exit(EXIT_FAILURE);
-    cv::Mat imgtemp(m_orig.rows, m_orig.cols, m_orig.type(), m_black);
+    cv::Mat imgtemp(ui->graphicsView->height(), ui->graphicsView->width(), m_orig.type(), m_black);
     imgtemp.convertTo(m_blackmat, cv::COLOR_BGR2RGB);
     m_allblack = QImage((uchar*) m_blackmat.data, m_blackmat.cols, m_blackmat.rows, m_blackmat.step, QImage::Format_Indexed8);
 
@@ -62,7 +62,9 @@ void MainWindow::procFrameAndRefresh(){
         if(m_orig.empty()) exit(EXIT_SUCCESS);
 
         // Process image
-        inRange(m_orig, m_lb, m_ub, m_proc);
+//        cv::Mat mask;
+        inRange(m_orig, m_lb, m_ub, mask);
+//        m_proc = cv::Mat()
 
         // Convert cv to qt
         cv::Mat imgtemp = cv::Mat(m_proc.rows, m_proc.cols, m_proc.type(), m_proc.data, m_proc.step);
