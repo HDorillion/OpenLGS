@@ -63,7 +63,7 @@ void MainWindow::procFrameAndRefresh(){
 
         // Process image
 //        cv::Mat mask;
-        inRange(m_orig, m_lb, m_ub, mask);
+        inRange(m_orig, m_lb, m_ub, m_proc);
 //        m_proc = cv::Mat()
 
         // Convert cv to qt
