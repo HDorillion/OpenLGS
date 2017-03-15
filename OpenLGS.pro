@@ -24,10 +24,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    matimageprocessor.cpp
 
 HEADERS  += \
-    mainwindow.h
+    mainwindow.h \
+    matimageprocessor.h
 
 unix::LIBS += -L/usr/local/lib -lopencv_core \
               -L/usr/local/lib -lopencv_features2d \

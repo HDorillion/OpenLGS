@@ -11,6 +11,8 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 
+class MatImageProcessor;
+
 namespace Ui {
 class MainWindow;
 }
@@ -37,10 +39,11 @@ private:
     // cv vars
     cv::VideoCapture m_cap;
     cv::Mat m_orig, m_proc, m_blackmat;
-    cv::Scalar m_lb, m_ub, m_black;
 
     // Timer
     QTimer *m_timer;
+
+    MatImageProcessor *m_imageprocessor;
 
     bool m_recording, m_previewing;
 
