@@ -19,25 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Setup cv capture
-    m_cap.open(0);
-    if(!m_cap.isOpened()){
-        // errors
-        return;
-    }
-
-    cv::Scalar blanket = cv::Scalar(0,0,0);
-
-    // Store blank frame
-    m_cap.read(m_orig);
-    m_cap.release();
-    if(m_orig.empty()) exit(EXIT_FAILURE);
-    cv::Mat imgtemp(ui->graphicsView->height(), ui->graphicsView->width(), m_orig.type(), blanket);
-    MatImageProcessor::Mat2QImage(imgtemp, m_allblack);
-
     // Apply the black screen
     ui->graphicsView->setScene(m_mainframescene);
-    m_mainframescene->addPixmap(QPixmap::fromImage(m_allblack));
+//    m_mainframescene->addPixmap(QPixmap::fromImage(m_allblack));
     ui->graphicsView->show();
 
     // Connect timer
@@ -63,11 +47,9 @@ void MainWindow::procFrameAndRefresh(){
         m_frametodisplay = m_allblack;
     }
     else{
-        m_cap.read(m_orig);
-        if(m_orig.empty()) exit(EXIT_SUCCESS);
-
         // Process image
-         m_imageprocessor->processImage(m_orig, m_frametodisplay);
+        m_cap.getFrame(m_cvimg);
+        m_imageprocessor->processImage(m_cvimg, m_frametodisplay);
     }
     // Display new image
     m_mainframescene->addPixmap(QPixmap::fromImage(m_frametodisplay));
@@ -96,8 +78,13 @@ void MainWindow::on_pBtn_Record_clicked(){
             // Failure to open
             return;
         }
-        m_recording = m_previewing = true;
-        std::cout << "Started recording\n";
+        m_cap.getEmptyFrame(m_cvimg);
+        if(!m_cvimg.empty()){
+            m_cap.open(0);
+            MatImageProcessor::Mat2QImage(m_cvimg, m_allblack);
+            m_recording = m_previewing = true;
+            std::cout << "Started recording\n";
+        }
     }
 }
 

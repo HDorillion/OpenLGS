@@ -4,12 +4,14 @@
 // Qt libs
 #include <QMainWindow>
 #include <QGraphicsScene>
+#include <QSlider>
 #include <QTimer>
 
 // cv libs
 #include "opencv2/core.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/imgproc.hpp"
+
+// Wrapper libs
+#include "camera.h"
 
 class MatImageProcessor;
 
@@ -36,9 +38,10 @@ private:
     QImage m_frametodisplay, m_allblack;
     QPixmap *m_lastframe;
     QColor m_backcolor;
-    // cv vars
-    cv::VideoCapture m_cap;
-    cv::Mat m_orig, m_proc, m_blackmat;
+
+    // Camera and camera images
+    cv::Mat m_cvimg;
+    Camera m_cap;
 
     // Timer
     QTimer *m_timer;

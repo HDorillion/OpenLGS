@@ -25,11 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
     mainwindow.cpp \
-    matimageprocessor.cpp
+    matimageprocessor.cpp \
+    camera.cpp
 
 HEADERS  += \
     mainwindow.h \
-    matimageprocessor.h
+    matimageprocessor.h \
+    camera.h
 
 unix::LIBS += -L/usr/local/lib -lopencv_core \
               -L/usr/local/lib -lopencv_features2d \

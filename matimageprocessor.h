@@ -18,8 +18,12 @@ public:
     static void QImage2Mat(QImage const& src, cv::Mat &dst);
     // Regular functions
     void processImage(const cv::Mat &src, QImage &dst);
+    void generateMask(const cv::Mat &src, cv::Mat &fgmask, cv::Mat &bgmask);
 
     static cv::Scalar m_lb, m_ub;
+
+private:
+    cv::Mat m_fgmask, m_bgmask, m_norm, m_inv;
 };
 
 #endif // MATIMAGEPROCESSOR_H

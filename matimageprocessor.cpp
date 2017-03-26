@@ -8,8 +8,8 @@
 #include "opencv2/imgproc.hpp"
 
 // Static variables
-cv::Scalar MatImageProcessor::m_lb = cv::Scalar(5,60,60);
-cv::Scalar MatImageProcessor::m_ub = cv::Scalar(40,255,255);
+cv::Scalar MatImageProcessor::m_lb = cv::Scalar(50-45,60,60);
+cv::Scalar MatImageProcessor::m_ub = cv::Scalar(50+45,255,255);
 
 // Static functions
 void MatImageProcessor::Mat2QImage(const cv::Mat &src, QImage &dst){
@@ -34,16 +34,28 @@ MatImageProcessor::MatImageProcessor()
 
 // processImage processes the image (will go in a class later)
 void MatImageProcessor::processImage(const cv::Mat &src, QImage &dst){
-    cv::Mat mask, tmp;
+    cv::Mat tmp, final;
 
     // Convert and process
-    cv::cvtColor(src, tmp, CV_BGR2HSV);
-    cv::inRange(tmp, m_lb, m_ub, mask);
-    tmp = cv::Scalar(0,0,0);
-    src.copyTo(tmp);
+    generateMask(src, m_fgmask, m_bgmask);
 
-    cv::cvtColor(tmp, tmp, CV_HSV2BGR);
+    src.copyTo(tmp);    
+    tmp.setTo(cv::Scalar(0,0,0), m_fgmask);
+//    cv::Mat m_inverse = tmp.setTo(cv::Scalar(0,255,0), m_fgmask);
+//    m_inv = tmp.setTo(cv::Scalar(0,0,0), m_invertedmask);
+    final = tmp;
+
+    cv::cvtColor(final, final, CV_HSV2BGR);
 
     // Return to QImage format
-    Mat2QImage(src, dst);
+    Mat2QImage(final, dst);
+}
+
+// generateMask
+void MatImageProcessor::generateMask(const cv::Mat &src, cv::Mat &fgmask, cv::Mat &bgmask){
+    // Convert and process
+    cv::cvtColor(src, src, CV_BGR2HSV);
+    cv::inRange(src, m_lb, m_ub, bgmask);
+    
+    cv::bitwise_not(bgmask, fgmask);
 }
