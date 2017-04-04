@@ -24,7 +24,7 @@ public:
     void getFrame(cv::Mat &dst);
 
 private:
-    cv::Mat m_frame;
+    cv::Mat frame_;
 };
 
 #endif // CAMERA_H

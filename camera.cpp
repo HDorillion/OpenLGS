@@ -7,12 +7,12 @@ void Camera::getEmptyFrame(cv::Mat &dst){
     this->open(0);
     assert(this->isOpened() == true);
 
-    this->read(m_frame);
+    this->read(frame_);
     this->release();
-    dst = m_frame = cv::Mat(m_frame.rows, m_frame.cols, m_frame.type(), cv::Scalar(0,0,0));
+    dst = frame_ = cv::Mat(frame_.rows, frame_.cols, frame_.type(), cv::Scalar(0,0,0));
 }
 
 void Camera::getFrame(cv::Mat &dst){
     if(this->isOpened() == true) this->read(dst);
-    else dst = m_frame;
+    else dst = frame_;
 }

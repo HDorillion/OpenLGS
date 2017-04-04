@@ -33,12 +33,23 @@ HEADERS  += \
     matimageprocessor.h \
     camera.h
 
+win32 {
+    INCLUDEPATH += D:\Development\libs\OpenCV\opencv320\build\include \
+                   "C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt"
+}
+win32::LIBS += D:\Development\libs\OpenCV\opencv320\build\x64\vc14\lib\opencv_world320.lib \
+            "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64\libucrt.lib" \
+#            "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64\libucrtd.lib" \
+            "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64\ucrt.lib" \
+            "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64\ucrtd.lib"
+
+
 unix::LIBS += -L/usr/local/lib -lopencv_core \
-              -L/usr/local/lib -lopencv_features2d \
-              -L/usr/local/lib -lopencv_imgproc \
-              -L/usr/local/lib -lopencv_videoio \
-              -L/usr/local/lib -lopencv_highgui \
-              -L/usr/local/lib -lopencv_calib3d \
+            -L/usr/local/lib -lopencv_features2d \
+            -L/usr/local/lib -lopencv_imgproc \
+            -L/usr/local/lib -lopencv_videoio \
+            -L/usr/local/lib -lopencv_highgui \
+            -L/usr/local/lib -lopencv_calib3d
 
 FORMS += \
     mainwindow.ui

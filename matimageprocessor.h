@@ -20,10 +20,10 @@ public:
     void processImage(const cv::Mat &src, QImage &dst);
     void generateMask(const cv::Mat &src, cv::Mat &fgmask, cv::Mat &bgmask);
 
-    static cv::Scalar m_lb, m_ub;
+    static cv::Scalar lb_, ub_;
 
 private:
-    cv::Mat m_fgmask, m_bgmask, m_norm, m_inv;
+    cv::Mat fgmask_, bgmask_, norm_, inv_;
 };
 
 #endif // MATIMAGEPROCESSOR_H
