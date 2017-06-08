@@ -35,14 +35,11 @@ HEADERS  += \
 
 win32 {
     INCLUDEPATH += D:\Development\libs\OpenCV\opencv320\build\include \
-                   "C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt"
+                   "C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\um"
 }
-win32::LIBS += D:\Development\libs\OpenCV\opencv320\build\x64\vc14\lib\opencv_world320.lib \
-            "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64\libucrt.lib" \
-#            "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64\libucrtd.lib" \
-            "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64\ucrt.lib" \
-            "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x64\ucrtd.lib"
-
+win32::LIBS += -L"D:\Development\libs\OpenCV\opencv320\build\x64\vc14\bin" -lopencv_world320 \
+            "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x86\ucrt.lib" \
+            "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x86\ucrtd.lib"
 
 unix::LIBS += -L/usr/local/lib -lopencv_core \
             -L/usr/local/lib -lopencv_features2d \
