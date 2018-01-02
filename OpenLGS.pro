@@ -33,20 +33,16 @@ HEADERS  += \
     matimageprocessor.h \
     camera.h
 
-win32 {
-    INCLUDEPATH += D:\Development\libs\OpenCV\opencv320\build\include \
-                   "C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\um"
-}
-win32::LIBS += -L"D:\Development\libs\OpenCV\opencv320\build\x64\vc14\bin" -lopencv_world320 \
-            "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x86\ucrt.lib" \
-            "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.10240.0\ucrt\x86\ucrtd.lib"
-
-unix::LIBS += -L/usr/local/lib -lopencv_core \
-            -L/usr/local/lib -lopencv_features2d \
-            -L/usr/local/lib -lopencv_imgproc \
-            -L/usr/local/lib -lopencv_videoio \
-            -L/usr/local/lib -lopencv_highgui \
-            -L/usr/local/lib -lopencv_calib3d
-
 FORMS += \
     mainwindow.ui
+
+# Includes
+unix:!macx: INCLUDEPATH += /usr/local/include
+unix:!macx: DEPENDPATH += /usr/local/include
+
+# Libraries
+unix:!macx: LIBS += -L/usr/local/lib/   -lopencv_core \
+                                        -lopencv_calib3d \
+                                        -lopencv_features2d \
+                                        -lopencv_imgproc \
+                                        -lopencv_videoio
